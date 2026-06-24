@@ -56,4 +56,18 @@ The core differences come down to how they arrange their processing cores, how t
 
 ---
 
-Are you comparing these architectures to decide on a specific CPU upgrade for a new PC build, or are you looking at them from a software development and optimization standpoint?
+
+## Hyperthreading
+
+* **The Illusion:** Hyper-Threading duplicates only the "bookkeeping" parts of a core (registers and instruction pointers). This tricks the operating system into seeing **two virtual cores** instead of one.
+* **The Shared Muscle:** The actual calculation engines (ALUs, FPUs) and caches are *not* duplicated; they are shared between the two virtual cores.
+* **Filling the Gaps:** A single software thread rarely uses 100% of a core's capacity. When Thread 0 pauses—usually because it is waiting for data to load from RAM—Hyper-Threading instantly steps in and feeds instructions from Thread 1 into the empty space.
+* **Simultaneous Action:** If Thread 0 is doing integer math and Thread 1 is doing floating-point math, they execute at the exact same time because they use different sub-components of the core.
+
+**The Bottom Line:** It doesn't double your performance because the core's physical muscle is still shared, but it increases efficiency, resulting in a **15% to 30% speed boost** for heavy multitasking and rendering workloads.
+
+WITHOUT HYPER-THREADING (One Thread at a time)
+[ Browser Task ] -> [ IDLE / WAITING FOR RAM ] -> [ Video Task ] -> [ IDLE ]
+
+WITH HYPER-THREADING (Interleaved & Simultaneous)
+[ Browser Task ] -> [ Video Task (filled gap) ] -> [ Both Tasks Executing ]
