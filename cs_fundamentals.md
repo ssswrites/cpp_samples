@@ -71,3 +71,46 @@ WITHOUT HYPER-THREADING (One Thread at a time)
 
 WITH HYPER-THREADING (Interleaved & Simultaneous)
 [ Browser Task ] -> [ Video Task (filled gap) ] -> [ Both Tasks Executing ]
+
+
+
+## Multithreading vs Multiprocessing
+Here are the top 5 key highlights comparing **Multithreading** (one program splitting tasks into multiple threads within the same process) and **Multiprocessing** (running multiple independent processes across multiple CPU cores).
+
+---
+
+### 1. Memory Sharing vs. Memory Isolation
+
+* **Multithreading:** All threads within a process share the **same memory space** (heap, global variables). This makes sharing data between threads incredibly fast, but it requires careful synchronization (like locks or mutexes) to prevent threads from accidentally overwriting each other's data (race conditions).
+* **Multiprocessing:** Each process gets its own **completely isolated memory space**. Because they don't share memory, one process cannot accidentally corrupt another's data. However, if they need to talk to each other, they must use slower Inter-Process Communication (IPC) methods like pipes or sockets.
+
+### 2. Overhead and Creation Speed
+
+* **Multithreading:** Threads are lightweight. Because they share the existing memory and resources of their parent process, creating, destroying, or switching between threads (context switching) is incredibly fast and consumes very little CPU overhead.
+* **Multiprocessing:** Processes are heavyweight. Creating a new process requires the operating system to allocate a brand-new chunk of RAM, load code, and set up independent system resources. This makes process creation and context switching significantly slower and more resource-intensive.
+
+### 3. Fault Tolerance and Stability
+
+* **Multithreading:** Low fault tolerance. Because threads share the same memory space, if a single thread encounters a fatal error (like a segmentation fault or a null-pointer exception) and crashes, it will typically **crash the entire application**.
+* **Multiprocessing:** High fault tolerance. Because processes are isolated, if one process crashes or freezes, the remaining processes keep running completely unaffected. For example, Google Chrome uses multiprocessing so that if a single web tab crashes, your entire browser doesn't close.
+
+### 4. Bypassing the GIL (Global Interpreter Lock)
+
+* **Multithreading:** In certain programming languages like Python or Ruby, a mechanism called the Global Interpreter Lock (GIL) prevents multiple threads from executing code at the exact same time. Therefore, multithreading in Python cannot utilize multiple CPU cores for heavy math or logic.
+* **Multiprocessing:** Multiprocessing completely **bypasses the GIL** because each process gets its own independent interpreter instance and its own CPU core. If you need to do heavy CPU-bound data crunching in Python, multiprocessing is mandatory.
+
+### 5. Best Use Cases: I/O-Bound vs. CPU-Bound
+
+* **Multithreading** is best for **I/O-bound tasks**—where the CPU spends most of its time waiting for something else to finish (e.g., downloading files, web scraping, fetching database data, or keeping a user interface responsive while loading a file).
+* **Multiprocessing** is best for **CPU-bound tasks**—where the CPU is pinned at 100% calculating raw data (e.g., 3D video rendering, video encoding, machine learning training, or heavy scientific simulations).
+
+---
+
+### Quick Summary
+
+| Feature | Multithreading | Multiprocessing |
+| --- | --- | --- |
+| **Memory** | Shared | Isolated (Separate) |
+| **Overhead** | Very Low / Fast | High / Slower |
+| **If one crashes...** | The whole app crashes | Only that process crashes |
+| **Best For** | Web scraping, UI responsiveness, I/O | Video rendering, AI, heavy math |
